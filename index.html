@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>KINO IA – Gerador de Roteiros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- STYLE -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- ICON -->
+  <link rel="icon" href="favicon.ico" />
+</head>
+
+<body>
+
+<!-- ======================================
+     HEADER
+====================================== -->
+<header>
+  <div class="logo">KINO IA</div>
+
+  <nav class="nav-menu" id="navMenu">
+    <a href="#" id="link-config">Configurações</a>
+    <a href="#" id="link-account">Minha Conta</a>
+  </nav>
+
+  <button class="hamburger" id="hamburgerBtn">☰</button>
+</header>
+
+<!-- ======================================
+     MAIN
+====================================== -->
+<main class="container">
+  <div class="card">
+
+    <h1 class="hero">Gerador de Roteiros</h1>
+    <p class="subtitle">Descreva sua ideia e receba um roteiro profissional</p>
+
+    <div class="controls-grid">
+
+      <div class="input-group">
+        <label for="model-select">Modelo de IA</label>
+        <select id="model-select">
+          <option value="gpt-4.1">GPT-4.1</option>
+          <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+          <option value="gpt-4.1-preview">GPT-4.1 Preview</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="tone-select">Estilo do roteiro</label>
+        <select id="tone-select">
+          <option value="profissional">Profissional</option>
+          <option value="divertido">Divertido (TikTok)</option>
+          <option value="criativo">Criativo</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="input-group">
+      <label for="prompt-input">Sua ideia</label>
+      <textarea id="prompt-input" placeholder="Digite aqui sua ideia de vídeo, filme ou anúncio..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="generate-btn" id="btn-create">Gerar Roteiro</button>
+    </div>
+
+    <h2 class="result-header">Resultado</h2>
+    <div id="output" class="output"></div>
+
+    <div id="creditsInfo" class="credits-info hidden">
+      <span id="creditsRemaining"></span>
+      <small id="creditsReset"></small>
+    </div>
+
+  </div>
+</main>
+
+<!-- ======================================
+     MODAL: CONFIG
+====================================== -->
+<div class="modal" id="configModal" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close-btn" id="closeConfig">✕</button>
+
+    <h2 style="text-align:center;">Configurações</h2>
+
+    <div class="section-block">
+      <label>Tema</label>
+      <div class="profile-row">
+        <input type="checkbox" id="setting-darkmode" />
+        <span>Ativar modo escuro</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <label>Tamanho da fonte</label>
+      <select id="setting-fontsize">
+        <option value="normal">Normal</option>
+        <option value="small">Pequeno</option>
+        <option value="large">Grande</option>
+      </select>
+    </div>
+
+    <div class="section-block">
+      <label>Modelo padrão</label>
+      <select id="setting-default-model">
+        <option value="gpt-4.1">GPT-4.1</option>
+        <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+        <option value="gpt-4.1-preview">GPT-4.1 Preview</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button id="saveSettings" class="generate-btn">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================
+     MODAL: MINHA CONTA
+====================================== -->
+<div class="modal" id="accountModal" aria-hidden="true">
+  <div class="modal-content account-modal">
+    <button class="close-btn" id="closeAccount">✕</button>
+
+    <div class="account-top">
+      <div class="account-avatar" id="avatarInitial">U</div>
+      <div class="account-meta">
+        <div class="account-name" id="account-name">Usuário</div>
+        <div class="account-email" id="account-email"></div>
+      </div>
+    </div>
+
+    <div class="account-tabs">
+      <button class="tab active" data-tab="profile">Perfil</button>
+      <button class="tab" data-tab="security">Segurança</button>
+      <button class="tab" data-tab="subscription">Assinatura</button>
+      <button class="tab" data-tab="auth">Login</button>
+    </div>
+
+    <div class="account-body">
+
+      <!-- PROFILE -->
+      <div id="content-profile" class="tab-content">
+        <div class="section-block">
+          <label>Nome completo</label>
+          <input id="profile-name-input" type="text" />
+          <button id="btn-save-name" class="secondary-btn" style="margin-top:6px;">Salvar nome</button>
+        </div>
+
+        <div class="section-block">
+          <label>Email</label>
+          <input id="profile-email" type="text" disabled class="muted-field" />
+        </div>
+
+        <button id="btn-firebase-logout" class="secondary-btn" style="margin-top:10px;">Sair</button>
+      </div>
+
+      <!-- SECURITY -->
+      <div id="content-security" class="tab-content hidden">
+        <div class="section-block">
+          <label>Email</label>
+          <input id="security-email" type="text" disabled class="muted-field" />
+        </div>
+
+        <div class="section-block">
+          <label>Nova senha</label>
+          <input id="new-password" type="password" />
+        </div>
+
+        <button id="btn-change-password" class="generate-btn">Alterar senha</button>
+      </div>
+
+      <!-- SUBSCRIPTION -->
+      <div id="content-subscription" class="tab-content hidden">
+        <div class="section-block">
+          <label>Plano atual</label>
+          <div id="account-plan" class="muted-field">Free</div>
+        </div>
+
+        <button id="premium-upgrade" class="generate-btn">Fazer upgrade</button>
+      </div>
+
+      <!-- AUTH (LOGIN + SIGNUP) -->
+      <div id="content-auth" class="tab-content hidden">
+
+        <!-- GOOGLE LOGIN -->
+        <button id="btn-google-login" class="generate-btn" style="width:100%; margin-bottom:18px;">
+          Entrar com Google
+        </button>
+
+        <!-- EMAIL LOGIN -->
+        <div class="section-block">
+          <h3>Entrar com Email</h3>
+          <input id="login-email" type="email" placeholder="Email" /><br><br>
+          <input id="login-password" type="password" placeholder="Senha" /><br><br>
+          <button id="btn-email-login" class="generate-btn">Entrar</button>
+        </div>
+
+        <!-- EMAIL SIGNUP -->
+        <div class="section-block">
+          <h3>Criar conta</h3>
+          <input id="signup-name" type="text" placeholder="Nome completo" /><br><br>
+          <input id="signup-email" type="email" placeholder="Email" /><br><br>
+          <input id="signup-password" type="password" placeholder="Senha" /><br><br>
+          <button id="btn-email-signup" class="generate-btn">Criar conta</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================================
+     PREMIUM PROMPT
+====================================== -->
+<div class="premium-prompt hidden" id="premiumPrompt" aria-hidden="true">
+  <div class="premium-content">
+    <button class="close-btn small" id="closePremium">✕</button>
+
+    <div class="premium-illustration">⚡</div>
+    <h3>Acesso Premium Necessário</h3>
+    <p class="premium-text">
+      Todos os roteiros gratuitos foram usados.<br />
+      Faça login ou assine para continuar.
+    </p>
+
+    <div class="premium-actions">
+      <button id="premium-login" class="secondary-btn">Entrar</button>
+      <button id="premium-signup" class="generate-btn">Criar conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================
+     UPGRADE MODAL
+====================================== -->
+<div class="modal" id="upgradeModal" aria-hidden="true">
+  <div class="modal-content upgrade-content">
+
+    <button class="close-btn" id="closeUpgrade">✕</button>
+
+    <h2 style="text-align:center;">Escolha um plano</h2>
+
+    <div class="plans-grid">
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <span class="plan-title">Starter</span>
+          <span class="plan-price">R$ 9,90/mês</span>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature">15 créditos/mês</div>
+          <div class="plan-feature">Velocidade normal</div>
+        </div>
+        <div class="plan-footer">
+          <button data-plan="starter" class="plan-choose generate-btn">Assinar Starter</button>
+        </div>
+      </div>
+
+      <div class="plan-card plan-popular">
+        <span class="badge">MAIS POPULAR</span>
+        <div class="plan-header">
+          <span class="plan-title">Plus</span>
+          <span class="plan-price">R$ 17,90/mês</span>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature">35 créditos/mês</div>
+          <div class="plan-feature">Velocidade alta</div>
+        </div>
+        <div class="plan-footer">
+          <button data-plan="plus" class="plan-choose generate-btn">Assinar Plus</button>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <span class="plan-title">Pro</span>
+          <span class="plan-price">R$ 29,90/mês</span>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature">Roteiros ilimitados</div>
+          <div class="plan-feature">Velocidade máxima</div>
+        </div>
+        <div class="plan-footer">
+          <button data-plan="pro" class="plan-choose generate-btn">Assinar Pro</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================================
+     CONGRATS
+====================================== -->
+<div class="modal" id="congratsModal" aria-hidden="true">
+  <div class="modal-content" style="max-width:460px;">
+    <button class="close-btn" id="congratsClose">✕</button>
+
+    <h2 style="text-align:center; color:var(--accent);">🎉 Parabéns!</h2>
+    <p style="text-align:center; color: var(--muted);">
+      Sua assinatura foi ativada com sucesso!
+    </p>
+
+    <div class="actions">
+      <button id="congratsStartUsing" class="generate-btn">Começar a usar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================
+     SCRIPT
+====================================== -->
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

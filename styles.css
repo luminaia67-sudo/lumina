@@ -1,0 +1,583 @@
+/* ============================================
+   KINO IA - styles.css (Versão A - Corrigida)
+   - Arquivo completo, verboso, sem compactação
+   - Corrigidos: overlay duplicado, header, modais, z-index,
+     pointer-events e dark-mode
+   ============================================ */
+
+/* =========================
+   VARIÁVEIS GLOBAIS (ROOT)
+   ========================= */
+:root {
+  --bg: #f6f8fb;
+  --bg-2: #f1f5f9;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --muted-2: #9aa3b2;
+  --accent: #0466ff;
+  --accent-2: #2aa6ff;
+  --danger: #ef4444;
+  --success: #10b981;
+  --glass: rgba(255,255,255,0.6);
+  --glass-2: rgba(255,255,255,0.95);
+  --shadow-1: 0 8px 24px rgba(16,24,40,0.06);
+  --shadow-2: 0 18px 60px rgba(11,14,17,0.06);
+  --radius: 12px;
+  --max-width: 1100px;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+  --ease-fast: cubic-bezier(.2,.9,.3,1);
+  --text: #0f1724;
+  --muted-3: rgba(15,23,36,0.55);
+  --overlay: rgba(4,8,12,0.45);
+  --focus-outline: 3px rgba(4,102,255,0.14);
+}
+
+/* =========================
+   DARK THEME
+   ========================= */
+body.dark {
+  --bg: #0b0d0f;
+  --bg-2: #0f1113;
+  --card: #0f1113;
+  --muted: #9ca3af;
+  --muted-2: #8b98a6;
+  --accent: #4dabff;
+  --accent-2: #2b7fbf;
+  --glass: rgba(13,16,20,0.6);
+  --shadow-1: 0 8px 24px rgba(2,6,23,0.35);
+  --shadow-2: 0 18px 60px rgba(0,0,0,0.6);
+  --text: #e6eef8;
+  --muted-3: rgba(230,238,248,0.65);
+}
+
+/* =========================
+   RESET & BASE
+   ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color: var(--text);
+  line-height: 1.45;
+  -webkit-font-feature-settings:"ss01" on;
+  font-feature-settings: "ss01" on;
+  transition: background .22s var(--ease-fast), color .22s var(--ease-fast);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Make sure no accidental overlay pseudo-elements remain */
+html::before, html::after,
+body::before, body::after {
+  content: none !important;
+  background: transparent !important;
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Utility */
+.hidden { display: none !important; }
+.text-muted { color: var(--muted); }
+.container { max-width: var(--max-width); margin: 110px auto 40px; padding: 0 20px; }
+
+/* =========================
+   HEADER
+   ========================= */
+header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  /* Light-mode header: semi-translucent white so it stays visible */
+  background: rgba(255,255,255,0.66);
+  color: var(--text);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(6px);
+}
+
+/* When dark mode is active, make header darker but still semi-translucent */
+body.dark header {
+  background: rgba(10,12,14,0.55);
+  color: var(--text);
+}
+
+/* Logo */
+.logo {
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+/* Nav */
+.nav-menu {
+  display: flex;
+  gap: 14px;
+}
+.nav-menu a {
+  color: #0f1724;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+/* On dark mode keep links light */
+body.dark .nav-menu a { color: #fff; }
+
+/* Hamburger (mobile) */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 0;
+  color: #0f1724;
+  font-size: 22px;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .hamburger { display: block; color: #fff; }
+  .nav-menu { display: none; }
+  .nav-menu.active { display:flex; flex-direction:column; position:fixed; top:64px; left:0; right:0; background: #0f1113; padding: 20px; gap:12px; z-index:999; }
+}
+
+/* =========================
+   CARD + HERO
+   ========================= */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 36px;
+  box-shadow: var(--shadow-2);
+  transition: transform .18s var(--ease-fast), box-shadow .18s var(--ease-fast);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.card:active { transform: translateY(1px); }
+
+.hero {
+  text-align: center;
+  color: var(--accent);
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 800;
+}
+.subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin-top: -2px;
+  font-size: 14px;
+}
+
+/* =========================
+   CONTROLS
+   ========================= */
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 18px 0 12px;
+}
+.input-group label {
+  display: block;
+  margin-bottom:8px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+}
+.input-group select,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(15,23,36,0.06);
+  background: linear-gradient(180deg, rgba(250,252,255,1), rgba(247,250,255,1));
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+.input-group select:focus,
+textarea:focus,
+input:focus { box-shadow: 0 6px 20px rgba(12,30,100,0.06); border-color: var(--accent); }
+
+/* PROMPT textarea */
+textarea#prompt-input {
+  min-height: 120px;
+  margin-top:8px;
+  font-family: var(--mono);
+  color: var(--text);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ACTIONS / BUTTONS */
+.actions {
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-top: 12px;
+}
+.generate-btn {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor:pointer;
+  box-shadow: 0 12px 36px rgba(4,102,255,0.14);
+  transition: transform .08s var(--ease-fast), box-shadow .12s var(--ease-fast);
+}
+.generate-btn:hover { transform: translateY(-3px); }
+.secondary-btn {
+  background: linear-gradient(180deg,#f1f7ff,#eef6ff);
+  color: var(--text);
+  border: 1px solid rgba(6,24,64,0.04);
+  padding:10px 20px;
+  border-radius: 10px;
+  cursor:pointer;
+  font-weight:700;
+}
+.generate-btn:active, .secondary-btn:active { transform: translateY(1px); }
+
+/* =========================
+   RESULT / OUTPUT
+   ========================= */
+.result-header {
+  margin-top: 28px;
+  font-size: 18px;
+  border-bottom: 2px solid rgba(15,23,36,0.03);
+  padding-bottom: 10px;
+  color: var(--text);
+}
+
+/* LOADING overlay is positioned relative to card; keep it non-blocking by default */
+.loading-overlay {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  position: absolute;
+  inset: 0;
+  left: 0;
+  background: transparent;
+  pointer-events: none;
+}
+.loading-overlay.hidden { display:none; pointer-events: none; }
+
+/* spinner */
+.spinner {
+  width:36px; height:36px; border-radius:50%;
+  border:4px solid rgba(255,255,255,0.12);
+  border-left-color: var(--accent);
+  animation: spin 1s linear infinite;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.output {
+  margin-top:12px;
+  background: linear-gradient(180deg,#fbfdff,#f7fbff);
+  border:1px solid rgba(6,24,64,0.03);
+  border-radius: 12px;
+  min-height: 200px;
+  padding: 18px;
+  white-space: pre-wrap;
+  overflow:auto;
+  color: var(--text);
+  font-size: 15px;
+  line-height:1.6;
+}
+
+/* generate visual effect on card */
+.generate-effect {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 80px rgba(2,6,23,0.06);
+}
+
+/* =========================
+   CREDITS INFO
+   ========================= */
+.credits-info {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg,#fff,#fbfdff);
+  border:1px solid rgba(6,24,64,0.03);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:700;
+  color: var(--muted);
+  justify-content:center;
+}
+.credits-info small { color: var(--muted-2); font-weight:600; }
+
+/* =========================
+   TOOLTIP
+   ========================= */
+.info-tooltip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:50%;
+  font-size:12px;
+  margin-left:6px;
+  cursor:pointer;
+  font-weight:800;
+}
+.tooltip-box {
+  position:absolute;
+  top:42px;
+  left:0;
+  width:300px;
+  background: var(--card);
+  padding:12px 14px;
+  border-radius: 10px;
+  border:1px solid rgba(6,24,64,0.04);
+  box-shadow: var(--shadow-1);
+  font-size:13px;
+  line-height:1.4;
+  display:none;
+  z-index:50;
+}
+.info-tooltip:hover + .tooltip-box,
+.info-tooltip:focus + .tooltip-box { display:block; animation: fadeInTooltip .22s var(--ease-fast); }
+@keyframes fadeInTooltip { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+/* =========================
+   MODAL BASE (general)
+   ========================= */
+/* By default modal is hidden (no overlay on body). When active it shows itself.
+   Use .modal.active to open - JS must add/remove .active */
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background: transparent; /* overlay handled by inner .modal-overlay if needed */
+  z-index:4000;
+  animation: fadeIn .20s var(--ease-fast);
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* prevent clicks when not active */
+}
+.modal.active {
+  display:flex;
+  pointer-events: auto;
+}
+.modal .modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(6px);
+  z-index: -1;
+}
+
+/* modal content */
+.modal-content {
+  width: 820px;
+  max-width: 96%;
+  background: var(--card);
+  margin: 0 auto;
+  padding: 22px;
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow-2);
+  border: 1px solid rgba(0,0,0,0.04);
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  z-index: 1;
+}
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+/* close btn */
+.close-btn {
+  position:absolute;
+  right:18px;
+  top:14px;
+  cursor:pointer;
+  font-size:18px;
+  background:transparent;
+  border:0;
+  color: var(--muted);
+}
+.close-btn:hover { color: var(--accent); transform: scale(1.02); }
+
+/* =========================
+   ACCOUNT MODAL (Minha Conta)
+   ========================= */
+.account-modal { max-width:760px; padding:18px 22px; gap:12px; }
+.account-top { display:flex; gap:14px; align-items:center; margin-bottom:6px; }
+.account-avatar { width:56px; height:56px; border-radius: 14px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:20px; flex-shrink:0; box-shadow: 0 10px 30px rgba(2,6,23,0.08); }
+.account-meta { display:flex; flex-direction:column; gap:2px; }
+.account-name { font-size:18px; font-weight:900; color: var(--accent); }
+.account-email { font-size:13px; color: var(--muted); }
+
+/* tabs */
+.account-tabs { display:flex; gap:8px; margin-top:6px; border-bottom:1px solid rgba(6,24,64,0.04); padding-bottom:10px; }
+.tab { background: transparent; border:0; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:700; color: var(--muted); transition: .12s; }
+.tab.active { color: var(--accent); background: linear-gradient(180deg, rgba(4,102,255,0.06), transparent); box-shadow: inset 0 -3px 0 var(--accent); }
+
+/* account body */
+.account-body { margin-top:12px; max-height:420px; overflow:auto; padding-right:6px; }
+.section-block { margin-bottom:16px; padding:12px; background: linear-gradient(180deg, rgba(0,0,0,0.01), transparent); border-radius:10px; border:1px solid rgba(6,24,64,0.02); }
+
+/* profile fields */
+.profile-row { display:flex; gap:8px; align-items:center; }
+.profile-row input { padding:10px; border-radius:10px; border:1px solid rgba(6,24,64,0.04); flex:1; }
+
+/* auth area */
+.auth-area { margin-top:14px; border-top:1px dashed rgba(6,24,64,0.04); padding-top:12px; }
+.auth-tabs { display:flex; gap:8px; margin-bottom:10px; }
+
+/* =========================
+   PREMIUM PROMPT (mini modal A2)
+   ========================= */
+.premium-prompt .modal-content { width:480px; max-width:94%; padding:28px; text-align:center; }
+.premium-prompt .premium-illustration { font-size:40px; margin-bottom:8px; }
+.premium-prompt .premium-content h3 { margin:4px 0 8px; font-size:20px; color:var(--accent); font-weight:900; }
+.premium-prompt .premium-text { color:var(--muted); margin-bottom:16px; line-height:1.35; font-size:15px; }
+
+/* =========================
+   UPGRADE MODAL (3 PLANS)
+   ========================= */
+.upgrade-content { max-width:1040px; width:96%; padding:26px 22px; border-radius:16px; }
+.plans-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; align-items:start; margin-top:12px; }
+.plan-card {
+  background: linear-gradient(180deg,#ffffff,#fbfdff);
+  border-radius: 12px;
+  padding:18px;
+  border:1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 20px 60px rgba(9,18,34,0.05);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:240px;
+  position:relative;
+  transition: transform .12s var(--ease-fast), box-shadow .12s var(--ease-fast);
+}
+.plan-card:hover { transform: translateY(-6px); box-shadow: 0 30px 100px rgba(9,18,34,0.08); }
+.plan-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.plan-title { font-weight:900; color: var(--text); font-size:18px; }
+.plan-price { font-weight:900; color: var(--accent); font-size:16px; }
+.plan-body { color:var(--muted); display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.plan-feature { font-size:14px; display:flex; align-items:center; gap:8px; }
+.plan-footer { display:flex; justify-content:center; margin-top:8px; }
+.plan-card.plan-popular { border:2px solid rgba(4,102,255,0.12); transform:scale(1.02); box-shadow: 0 28px 80px rgba(2,102,255,0.08); }
+.badge { position:absolute; top:12px; right:12px; background:var(--accent); color:white; padding:6px 10px; border-radius:10px; font-weight:800; font-size:12px; }
+.plan-feature::before { content: "•"; font-weight:800; color:var(--accent); margin-right:6px; }
+
+/* responsive upgrade */
+@media (max-width: 980px) {
+  .plans-grid { grid-template-columns: 1fr; }
+  .modal-content.upgrade-content { padding: 18px; }
+}
+
+/* =========================
+   CONGRATS MODAL
+   ========================= */
+#congratsModal .modal-content { max-width: 460px; padding: 22px; }
+#congratsModal .generate-btn { width: 220px; margin: 0 auto; }
+
+/* =========================
+   ANIMS, HELPERS, FOCUS
+   ========================= */
+@keyframes premiumIn { from { transform: translateY(8px) scale(.995); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
+@keyframes popIn { from { transform: translateY(6px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+
+.muted-field {
+  background: linear-gradient(180deg,#fbfdff,#f7fbff);
+  padding:10px; border-radius:10px; border:1px solid rgba(6,24,64,0.03); color:var(--muted);
+}
+
+.small-spinner {
+  width:18px; height:18px; border-radius:50%; border:3px solid rgba(255,255,255,0.12); border-left-color: var(--accent); animation: spin 1s linear infinite;
+}
+
+.hint { font-size:12px; color:var(--muted); }
+
+body.modal-open { overflow: hidden; }
+
+/* Keep modal hidden by default when adding .hidden */
+.modal { display: none; }
+.modal.active { display: flex; }
+
+/* =========================
+   DARK MODE TWEAKS (detalhado)
+   ========================= */
+body.dark .card { background: var(--card); border-color: rgba(255,255,255,0.03); box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+body.dark .output { background: linear-gradient(180deg,#0f1113,#0b0c0d); border-color: rgba(255,255,255,0.03); color: var(--text); }
+body.dark .plan-card { background: linear-gradient(180deg,#0f1113,#0b0c0d); border-color: rgba(255,255,255,0.03); }
+body.dark .premium-content { background: linear-gradient(180deg,#0f1113,#0b0c0d); border-color: rgba(255,255,255,0.03); }
+
+/* =========================
+   SCROLLBAR (suave)
+   ========================= */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(12,18,28,0.06); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+
+/* =========================
+   RESPONSIVE ADJUSTS
+   ========================= */
+@media (max-width: 768px) {
+  main.container { margin: 90px 12px 20px; }
+  .hero { font-size:22px; }
+  .controls-grid { grid-template-columns: 1fr; }
+  .modal-content { margin: 28px 12px; width: calc(100% - 24px); }
+  .account-body { max-height: none; }
+}
+
+/* =========================
+   ACCESSIBILITY / FOCUS
+   ========================= */
+a, button, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus, a:focus, input:focus, textarea:focus {
+  box-shadow: 0 4px 18px rgba(4,102,255,0.12);
+  outline: none;
+}
+
+/* =========================
+   Z-INDEX & POINTER-EVENTS FIXES (MODAIS SOBREPOSTOS)
+   ========================= */
+/* Base modal z-index (lower) */
+.modal { z-index: 4000; pointer-events: none; }
+/* When active allow pointer events */
+.modal.active { pointer-events: auto; }
+
+/* Upgrade modal slightly above base */
+#upgradeModal { z-index: 4500 !important; }
+/* Congrats modal must be topmost when shown */
+#congratsModal { z-index: 6000 !important; }
+/* Premium prompt above most modals */
+#premiumPrompt { z-index: 7000 !important; }
+
+/* Ensure hidden modals don't capture clicks */
+.modal:not(.active) { pointer-events: none !important; }
+
+/* =========================
+   END OF FILE - KINO IA (versão A, corrigida)
+   ========================= */
